@@ -1,0 +1,11 @@
+﻿"Id","Fecha","Paga","Emision de boletas","Paciente","Doctor/a","S/V/A","Recibo por honorarios (S/N)","Precio de venta total inc IGV","% de descuento","Descuento","Pecio de venta final","Pago a terceros","Ingreso clinica","%Valor IGV","IGV resultante","Ingreso sin IGV","% costo trajeta","Cobro tarjeta","% Insumos","Costo por insumos","% gastos administrativos","Costo por gastos administrativos","Queda como renta","% Impuesto a la renta","Costo Impuesto a la renta","Renta","Utilidad","% para doctor","Pago para el doctor","% real doctor respecto al pago del cliente","% real doctor sin IGV","Fecha de pago a doctor","Ingreso neto clinica","% real clinica"
+"1","20-9-19",,"True",,,,"True","100",,,,,,"0,18",,,"0,00",,,,,,,,,,,,,,,,,
+"2","20-9-19",,"True",,,,"True","200",,,,,,"0,18",,,"0,00",,,,,,,,,,,,,,,,,
+"3","20-9-19",,"True",,,,"True","300",,,,,,"0,18",,,"0,00",,,,,,,,,,,,,,,,,
+"4","20-9-19",,"False",,,,"False",,,,,,,"0,18",,,"0,00",,,,,,,,,,,,,,,,,
+"5","20-9-19",,"False",,,,"False",,,,,,,"0,18",,,"0,00",,,,,,,,,,,,,,,,,
+"6","20-9-19",,"False",,,,"False",,,,,,,"0,18",,,"0,00",,,,,,,,,,,,,,,,,
+"7","20-9-19",,"True",,,,"True","0,0000",,"0,0000","0,0000","0,0000",,"0,18",,,"0,00",,,,,,,,,,,,,,,,,
+"8","20-9-19",,"False",,,,"False","0,0000",,"0,0000","0,0000","0,0000",,"0,18",,,"0,00",,,,,,,,,,,,,,,,,
+"9","20-9-19",,"False",,,,"False","0,0000",,"0,0000","0,0000","0,0000",,"0,18",,,"0,00",,,,,,,,,,,,,,,,,
+"11","2-9-19",,"False",,,,"False","0,0000",,"0,0000","0,0000","0,0000",,"0,18",,,"0,04",,,,,,,,,,,,,,,,,
