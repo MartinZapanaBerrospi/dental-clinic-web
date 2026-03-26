@@ -221,7 +221,9 @@ export default function PatientDetailsPage({ params }: { params: Promise<{ id: s
                             </div>
                             <div>
                               <p className="text-sm font-bold text-slate-800">{appt.status || 'Scheduled'}</p>
-                              <p className="text-xs text-slate-500">Dr(a). {appt.doctors?.first_name || 'Sin asignar'}</p>
+                              <p className="text-xs text-slate-500">
+                                {appt.doctors ? `Dr(a). ${appt.doctors.first_name} ${appt.doctors.last_name}` : 'Sin asignar'}
+                              </p>
                             </div>
                           </div>
                           <span className={cn(

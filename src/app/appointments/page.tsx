@@ -156,7 +156,16 @@ export default function AppointmentsPage() {
                           </Link>
                         </td>
                         <td className="px-6 py-5">
-                          <span className="text-sm text-slate-600 font-medium italic">Dr(a). {appt.doctors?.first_name || 'Sin asignar'}</span>
+                          {appt.doctors ? (
+                            <div className="flex flex-col">
+                              <span className="text-sm font-bold text-slate-700">Dr(a). {appt.doctors.first_name} {appt.doctors.last_name}</span>
+                              {appt.doctors.specialty && (
+                                <span className="text-[10px] text-teal-600 font-bold uppercase tracking-tighter">{appt.doctors.specialty}</span>
+                              )}
+                            </div>
+                          ) : (
+                            <span className="text-sm text-slate-400 font-medium italic">Sin asignar</span>
+                          )}
                         </td>
                         <td className="px-6 py-5">
                           <span className={cn(
