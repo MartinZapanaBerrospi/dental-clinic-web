@@ -23,7 +23,18 @@ def main():
     print(f"Reading CSVs from {CSV_DIR}...")
     
     with open(OUTPUT_SQL, "w", encoding="utf-8") as out:
-        out.write("-- PostgreSQL Data Seed (Migrated from Access CSVs)\n\n")
+        out.write("-- PostgreSQL Data Seed (Migrated from Access CSVs)\n")
+        out.write("-- Este script limpia las tablas existentes e inserta datos frescos.\n\n")
+
+        out.write("-- 0. Cleanup (Manejo de estados previos)\n")
+        out.write("TRUNCATE TABLE patient_guardians CASCADE;\n")
+        out.write("TRUNCATE TABLE payments CASCADE;\n")
+        out.write("TRUNCATE TABLE appointment_treatments CASCADE; -- Si existe\n")
+        out.write("TRUNCATE TABLE patient_treatments CASCADE;\n")
+        out.write("TRUNCATE TABLE appointments CASCADE;\n")
+        out.write("TRUNCATE TABLE patients CASCADE;\n")
+        out.write("TRUNCATE TABLE doctors CASCADE;\n")
+        out.write("TRUNCATE TABLE treatments CASCADE;\n\n")
 
         # ------------------- 1. Doctors -------------------
         print("Transforming Doctors...")

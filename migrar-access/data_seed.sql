@@ -1,4 +1,15 @@
 -- PostgreSQL Data Seed (Migrated from Access CSVs)
+-- Este script limpia las tablas existentes e inserta datos frescos.
+
+-- 0. Cleanup (Manejo de estados previos)
+TRUNCATE TABLE patient_guardians CASCADE;
+TRUNCATE TABLE payments CASCADE;
+TRUNCATE TABLE appointment_treatments CASCADE; -- Si existe
+TRUNCATE TABLE patient_treatments CASCADE;
+TRUNCATE TABLE appointments CASCADE;
+TRUNCATE TABLE patients CASCADE;
+TRUNCATE TABLE doctors CASCADE;
+TRUNCATE TABLE treatments CASCADE;
 
 -- Table: doctors
 INSERT INTO doctors (id, first_name, last_name, specialty, cop_number) VALUES (1, 'Christian William', 'Chavez', NULL, NULL) ON CONFLICT DO NOTHING;
