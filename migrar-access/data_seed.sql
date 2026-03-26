@@ -4,7 +4,6 @@
 -- 0. Cleanup (Manejo de estados previos)
 TRUNCATE TABLE patient_guardians CASCADE;
 TRUNCATE TABLE payments CASCADE;
-TRUNCATE TABLE appointment_treatments CASCADE; -- Si existe
 TRUNCATE TABLE patient_treatments CASCADE;
 TRUNCATE TABLE appointments CASCADE;
 TRUNCATE TABLE patients CASCADE;

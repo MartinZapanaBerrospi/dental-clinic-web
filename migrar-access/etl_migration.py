@@ -29,7 +29,6 @@ def main():
         out.write("-- 0. Cleanup (Manejo de estados previos)\n")
         out.write("TRUNCATE TABLE patient_guardians CASCADE;\n")
         out.write("TRUNCATE TABLE payments CASCADE;\n")
-        out.write("TRUNCATE TABLE appointment_treatments CASCADE; -- Si existe\n")
         out.write("TRUNCATE TABLE patient_treatments CASCADE;\n")
         out.write("TRUNCATE TABLE appointments CASCADE;\n")
         out.write("TRUNCATE TABLE patients CASCADE;\n")

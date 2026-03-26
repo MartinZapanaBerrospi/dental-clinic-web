@@ -1,4 +1,15 @@
 -- PostgreSQL Schema for Dental Clinic (Migrated from Access)
+-- Este script recrea la estructura completa de la base de datos.
+-- PRECAUCIÓN: Elimina todas las tablas existentes antes de crearlas.
+
+DROP TABLE IF EXISTS payments CASCADE;
+DROP TABLE IF EXISTS patient_treatments CASCADE;
+DROP TABLE IF EXISTS treatments CASCADE;
+DROP TABLE IF EXISTS appointments CASCADE;
+DROP TABLE IF EXISTS patient_guardians CASCADE;
+DROP TABLE IF EXISTS patients CASCADE;
+DROP TABLE IF EXISTS doctors CASCADE;
+DROP TABLE IF EXISTS users CASCADE;
 
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
