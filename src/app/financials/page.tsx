@@ -88,7 +88,9 @@ export default function FinancialsPage() {
               <input 
                 type="text" 
                 placeholder="Buscar por paciente..."
-                className="w-full pl-9 pr-4 py-2 bg-white border border-slate-200 rounded-lg text-xs font-medium focus:outline-none focus:ring-2 focus:ring-teal-500/20 transition-all"
+                className="w-full pl-9 pr-4 py-2 bg-white border border-slate-200 rounded-lg text-xs font-medium focus:outline-none focus:ring-2 focus:ring-teal-500/20 transition-all font-bold uppercase"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
               />
            </div>
         </div>
@@ -97,11 +99,10 @@ export default function FinancialsPage() {
           <table className="w-full text-left">
             <thead>
                <tr className="bg-slate-50/50 text-[10px] uppercase font-bold text-slate-400 tracking-wider">
-                  <th className="px-6 py-4">ID</th>
                   <th className="px-6 py-4">Paciente</th>
                   <th className="px-6 py-4">Monto</th>
                   <th className="px-6 py-4">Método</th>
-                  <th className="px-6 py-4">Fecha (ID-Order)</th>
+                  <th className="px-6 py-4">Referencia</th>
                   <th className="px-6 py-4">Estado</th>
                   <th className="px-6 py-4"></th>
                </tr>
@@ -110,44 +111,58 @@ export default function FinancialsPage() {
               {loading ? (
                 [...Array(5)].map((_, i) => (
                   <tr key={i} className="animate-pulse">
-                    <td colSpan={7} className="px-6 py-6"><div className="h-4 bg-slate-100 rounded"></div></td>
+                    <td colSpan={6} className="px-6 py-6"><div className="h-4 bg-slate-100 rounded"></div></td>
                   </tr>
                 ))
-              ) : payments.map(pay => (
-                <tr key={pay.id} className="hover:bg-slate-50 transition-colors border-b border-slate-50 last:border-0">
-                  <td className="px-6 py-6 text-[10px] font-black tracking-widest text-slate-500">#TRX-{pay.id}</td>
-                  <td className="px-6 py-6">
-                    <Link href={`/patients/${pay.patient_id}`} className="text-sm font-black text-slate-900 uppercase tracking-tight hover:text-teal-700 transition-colors flex items-center gap-2">
-                       <div className="w-6 h-6 rounded-md bg-slate-100 flex items-center justify-center text-[10px] text-slate-400 font-black">
-                         {pay.patients?.first_name?.[0]}{pay.patients?.last_name_paternal?.[0]}
-                       </div>
-                       {pay.patients?.first_name} {pay.patients?.last_name_paternal}
-                    </Link>
-                  </td>
-                  <td className="px-6 py-6">
-                     <span className="text-sm font-black text-slate-900 tracking-tighter bg-teal-50 px-3 py-1.5 rounded-xl border border-teal-100 text-teal-800">S/ {pay.amount_paid}</span>
-                  </td>
-                  <td className="px-6 py-6">
-                     <span className="px-2.5 py-1 bg-slate-100 text-slate-700 rounded-lg text-[10px] font-black uppercase tracking-widest shadow-sm">
-                       {pay.payment_method}
-                     </span>
-                  </td>
-                  <td className="px-6 py-6 text-xs text-slate-600 font-bold uppercase tracking-tighter">
-                     Reg. #{pay.id}
-                  </td>
-                  <td className="px-6 py-6">
-                     <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-green-50 text-[10px] font-black text-green-700 uppercase tracking-widest rounded-full border border-green-100">
-                        <div className="w-1.5 h-1.5 rounded-full bg-green-600"></div>
-                        Completado
-                     </span>
-                  </td>
-                  <td className="px-6 py-6 text-right">
-                     <Link href={`/patients/${pay.patient_id}`} className="p-2.5 text-slate-400 hover:text-teal-700 hover:bg-teal-50 rounded-xl transition-all inline-block border border-transparent hover:border-teal-100">
-                       <ChevronRight className="w-5 h-5" />
-                     </Link>
+              ) : filteredPayments.length > 0 ? (
+                filteredPayments.map(pay => (
+                  <tr key={pay.id} className="hover:bg-slate-50 transition-colors border-b border-slate-50 last:border-0">
+                    <td className="px-6 py-6">
+                      <Link href={`/patients/${pay.patient_id}`} className="hover:text-teal-700 transition-colors flex items-center gap-3 group">
+                         <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-[10px] text-slate-400 font-black group-hover:bg-teal-600 group-hover:text-white transition-all shadow-sm">
+                           {pay.patients?.first_name?.[0]}{pay.patients?.last_name_paternal?.[0]}
+                         </div>
+                         <div className="flex flex-col">
+                           <span className="text-sm font-black text-slate-900 uppercase tracking-tight leading-none">
+                             {pay.patients?.first_name}
+                           </span>
+                           <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider mt-0.5">
+                             {pay.patients?.last_name_paternal} {pay.patients?.last_name_maternal}
+                           </span>
+                         </div>
+                      </Link>
+                    </td>
+                    <td className="px-6 py-6">
+                       <span className="text-sm font-black text-slate-900 tracking-tighter bg-teal-50 px-3 py-1.5 rounded-xl border border-teal-100 text-teal-800">S/ {pay.amount_paid}</span>
+                    </td>
+                    <td className="px-6 py-6">
+                       <span className="px-2.5 py-1 bg-slate-100 text-slate-700 rounded-lg text-[10px] font-black uppercase tracking-widest shadow-sm">
+                         {pay.payment_method}
+                       </span>
+                    </td>
+                    <td className="px-6 py-6 text-[10px] text-slate-400 font-bold uppercase tracking-widest">
+                       PAGO REGISTRADO
+                    </td>
+                    <td className="px-6 py-6">
+                       <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-green-50 text-[10px] font-black text-green-700 uppercase tracking-widest rounded-full border border-green-100">
+                          <div className="w-1.5 h-1.5 rounded-full bg-green-600"></div>
+                          Completado
+                       </span>
+                    </td>
+                    <td className="px-6 py-6 text-right">
+                       <Link href={`/patients/${pay.patient_id}`} className="p-2.5 text-slate-400 hover:text-teal-700 hover:bg-teal-50 rounded-xl transition-all inline-block border border-transparent hover:border-teal-100">
+                         <ChevronRight className="w-5 h-5" />
+                       </Link>
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan={6} className="px-6 py-12 text-center text-slate-400 italic text-sm">
+                    No se encontraron transacciones.
                   </td>
                 </tr>
-              ))}
+              )}
             </tbody>
           </table>
         </div>
