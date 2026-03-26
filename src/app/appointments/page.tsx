@@ -17,6 +17,11 @@ import { cn } from "@/lib/utils";
 import Link from "next/link";
 import SlideOver from "@/components/ui/SlideOver";
 import AppointmentForm from "@/components/forms/AppointmentForm";
+import FullCalendar from '@fullcalendar/react';
+import dayGridPlugin from '@fullcalendar/daygrid';
+import timeGridPlugin from '@fullcalendar/timegrid';
+import interactionPlugin from '@fullcalendar/interaction';
+import esLocale from '@fullcalendar/core/locales/es';
 
 export default function AppointmentsPage() {
   const [appointments, setAppointments] = useState<any[]>([]);
@@ -25,11 +30,12 @@ export default function AppointmentsPage() {
   const [view, setView] = useState<'table' | 'calendar'>('table');
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [selectedDoctorId, setSelectedDoctorId] = useState<string>('all');
+  const [viewDate, setViewDate] = useState(new Date());
 
   useEffect(() => {
     fetchAppointments();
     fetchDoctors();
-  }, []);
+  }, [viewDate]);
 
   async function fetchDoctors() {
     const { data } = await supabase.from('doctors').select('*').order('last_name', { ascending: true });
@@ -39,11 +45,17 @@ export default function AppointmentsPage() {
   async function fetchAppointments() {
     try {
       setLoading(true);
+      
+      // Calculate start and end of the current viewed month in America/Lima
+      const startOfMonth = new Date(viewDate.getFullYear(), viewDate.getMonth(), 1);
+      const endOfMonth = new Date(viewDate.getFullYear(), viewDate.getMonth() + 1, 0, 23, 59, 59);
+
       const { data, error } = await supabase
         .from('appointments')
         .select('*, patients(first_name, last_name_paternal, last_name_maternal), doctors(first_name, last_name, specialty)')
-        .order('scheduled_start', { ascending: false })
-        .limit(100);
+        .gte('scheduled_start', startOfMonth.toISOString())
+        .lte('scheduled_start', endOfMonth.toISOString())
+        .order('scheduled_start', { ascending: true });
 
       if (error) throw error;
       setAppointments(data || []);
@@ -53,6 +65,18 @@ export default function AppointmentsPage() {
       setLoading(false);
     }
   }
+
+  const handlePrevMonth = () => {
+    const newDate = new Date(viewDate);
+    newDate.setMonth(viewDate.getMonth() - 1);
+    setViewDate(newDate);
+  };
+
+  const handleNextMonth = () => {
+    const newDate = new Date(viewDate);
+    newDate.setMonth(viewDate.getMonth() + 1);
+    setViewDate(newDate);
+  };
 
   const handleCreateSuccess = () => {
     setIsFormOpen(false);
@@ -105,9 +129,21 @@ export default function AppointmentsPage() {
             <div className="p-4 border-b border-slate-50 flex items-center justify-between bg-slate-50/30">
               <div className="flex items-center gap-4">
                 <div className="flex bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm">
-                   <button className="px-3 py-2 border-r border-slate-200 hover:bg-slate-50"><ChevronLeft className="w-4 h-4 text-slate-400" /></button>
-                   <button className="px-4 py-2 font-bold text-xs flex items-center gap-2">Marzo 2026 <CalendarIcon className="w-3 h-3 text-teal-600" /></button>
-                   <button className="px-3 py-2 border-l border-slate-200 hover:bg-slate-50"><ChevronRight className="w-4 h-4 text-slate-400" /></button>
+                   <button 
+                     onClick={handlePrevMonth}
+                     className="px-3 py-2 border-r border-slate-200 hover:bg-slate-50 transition-colors"
+                   >
+                     <ChevronLeft className="w-4 h-4 text-slate-400" />
+                   </button>
+                   <button className="px-4 py-2 font-bold text-xs flex items-center gap-2 uppercase tracking-tight">
+                     {viewDate.toLocaleDateString('es-PE', { month: 'long', year: 'numeric' })} <CalendarIcon className="w-3 h-3 text-teal-600" />
+                   </button>
+                   <button 
+                     onClick={handleNextMonth}
+                     className="px-3 py-2 border-l border-slate-200 hover:bg-slate-50 transition-colors"
+                   >
+                     <ChevronRight className="w-4 h-4 text-slate-400" />
+                   </button>
                 </div>
                 <select 
                   value={selectedDoctorId}
@@ -235,10 +271,44 @@ export default function AppointmentsPage() {
             </div>
           </div>
         ) : (
-          <div className="p-20 flex flex-col items-center justify-center text-slate-300 h-96">
-             <CalendarIcon className="w-16 h-16 opacity-20 mb-4" />
-             <p className="text-lg font-bold text-slate-400">Vista de Calendario en desarrollo</p>
-             <p className="text-sm italic mt-2">Próxima implementación: FullCalendar.js</p>
+          <div className="p-4 h-[700px] calendar-container">
+            <FullCalendar
+              plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
+              initialView="dayGridMonth"
+              headerToolbar={{
+                left: 'prev,next today',
+                center: 'title',
+                right: 'dayGridMonth,timeGridWeek,timeGridDay'
+              }}
+              locale={esLocale}
+              events={appointments
+                .filter(a => selectedDoctorId === 'all' || a.doctor_id?.toString() === selectedDoctorId)
+                .map(appt => ({
+                  id: appt.id,
+                  title: `${appt.patients?.first_name} ${appt.patients?.last_name_paternal}`,
+                  start: appt.scheduled_start,
+                  end: appt.scheduled_end,
+                  extendedProps: { appt }
+                }))
+              }
+              eventContent={(eventInfo) => (
+                <div className="p-1 text-[10px] overflow-hidden">
+                  <div className="font-black uppercase truncate leading-tight">{eventInfo.event.title}</div>
+                  <div className="text-[9px] opacity-75 truncate">{eventInfo.timeText}</div>
+                </div>
+              )}
+              height="100%"
+              themeSystem="standard"
+              buttonText={{
+                today: 'Hoy',
+                month: 'Mes',
+                week: 'Semana',
+                day: 'Día'
+              }}
+              eventBackgroundColor="#0d9488"
+              eventBorderColor="#0f766e"
+              dayMaxEvents={true}
+            />
           </div>
         )}
       </div>
