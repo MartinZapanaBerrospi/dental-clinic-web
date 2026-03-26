@@ -184,9 +184,14 @@ export default function AppointmentForm({ onSuccess, onCancel }: AppointmentForm
                 {selectedPatient.first_name[0]}{selectedPatient.last_name_paternal[0]}
               </div>
               <div>
-                <p className="text-sm font-black text-slate-900 uppercase tracking-tight">
-                  {selectedPatient.first_name} {selectedPatient.last_name_paternal} {selectedPatient.last_name_maternal}
-                </p>
+                <div className="flex flex-col">
+                  <p className="text-sm font-black text-slate-900 uppercase tracking-tight leading-none">
+                    {selectedPatient.first_name}
+                  </p>
+                  <p className="text-[10px] font-bold text-teal-700/60 uppercase tracking-wider mt-0.5">
+                    {selectedPatient.last_name_paternal} {selectedPatient.last_name_maternal}
+                  </p>
+                </div>
                 <p className="text-[10px] font-black text-teal-700 uppercase tracking-[0.2em]">PACIENTE SELECCIONADO</p>
               </div>
             </div>
@@ -219,9 +224,14 @@ export default function AppointmentForm({ onSuccess, onCancel }: AppointmentForm
                     <div className="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center text-xs font-black text-slate-500 group-hover:bg-teal-600 group-hover:text-white transition-all">
                       {p.first_name[0]}{p.last_name_paternal[0]}
                     </div>
-                    <span className="text-sm font-black text-slate-900 uppercase tracking-tight group-hover:text-teal-700">
-                      {p.first_name} {p.last_name_paternal} {p.last_name_maternal}
-                    </span>
+                    <div className="flex flex-col">
+                      <span className="text-sm font-black text-slate-900 uppercase tracking-tight leading-none group-hover:text-teal-700 transition-colors">
+                        {p.first_name}
+                      </span>
+                      <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider mt-0.5">
+                        {p.last_name_paternal} {p.last_name_maternal}
+                      </span>
+                    </div>
                   </button>
                 ))}
               </div>

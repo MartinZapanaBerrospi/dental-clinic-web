@@ -100,9 +100,14 @@ export default function PatientDetailsPage({ params }: { params: Promise<{ id: s
           <ArrowLeft className="w-5 h-5" />
         </Link>
         <div>
-          <h1 className="text-2xl font-black tracking-tighter uppercase text-slate-900">
-            {patient.first_name} {patient.last_name_paternal} {patient.last_name_maternal}
-          </h1>
+          <div className="flex flex-col">
+            <h1 className="text-2xl font-black tracking-tighter uppercase text-slate-900 leading-none">
+              {patient.first_name}
+            </h1>
+            <h2 className="text-sm font-bold text-slate-500 uppercase tracking-widest mt-1">
+              {patient.last_name_paternal} {patient.last_name_maternal}
+            </h2>
+          </div>
           <p className="text-[10px] text-slate-600 flex items-center gap-2 font-bold uppercase tracking-widest">
             DNI: {patient.dni_number || '---'}
           </p>
@@ -118,9 +123,14 @@ export default function PatientDetailsPage({ params }: { params: Promise<{ id: s
                 {patient.first_name[0]}{patient.last_name_paternal[0]}
               </div>
               <div className="flex-1">
-                <p className="text-xl font-black text-slate-900 uppercase tracking-tight">
-                  {patient.first_name} {patient.last_name_paternal} {patient.last_name_maternal}
-                </p>
+                <div className="flex flex-col">
+                  <p className="text-lg font-black text-slate-900 uppercase tracking-tight leading-none">
+                    {patient.first_name}
+                  </p>
+                  <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mt-1">
+                    {patient.last_name_paternal} {patient.last_name_maternal}
+                  </p>
+                </div>
               </div>
             </div>
 

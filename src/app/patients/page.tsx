@@ -136,9 +136,14 @@ export default function PatientsPage() {
                           {patient.first_name?.[0]}{patient.last_name_paternal?.[0]}
                         </div>
                         <div>
-                          <p className="text-sm font-black text-slate-900 uppercase tracking-tight">
-                            {patient.first_name} {patient.last_name_paternal} {patient.last_name_maternal}
+                        <div className="flex flex-col">
+                          <p className="text-sm font-black text-slate-900 uppercase tracking-tight leading-none">
+                            {patient.first_name}
                           </p>
+                          <p className="text-[10px] font-bold text-slate-500 uppercase tracking-wider mt-1">
+                            {patient.last_name_paternal} {patient.last_name_maternal}
+                          </p>
+                        </div>
                         </div>
                       </div>
                     </td>
