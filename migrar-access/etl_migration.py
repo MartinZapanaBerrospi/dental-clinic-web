@@ -44,46 +44,54 @@ def main():
         df_patients = pd.read_csv(os.path.join(CSV_DIR, "Pacientes.csv"))
         df_patients.replace({"False": "0", "True": "1"}, inplace=True)
         
-        # --- Deduplication Logic for Patients ---
-        # Sort by Id_Paciente assuming newer IDs are more recently updated
-        df_patients.sort_values('Id_Paciente', inplace=True)
-        
-        # Clean DNI column to use as primary duplicate check
-        df_patients['DNI_clean'] = df_patients['DNI'].fillna('').astype(str).str.strip()
-        df_patients['DNI_clean'] = df_patients['DNI_clean'].replace({'nan': '', 'None': '', '0': ''})
-        
-        # Drop duplicated DNIs (keeping the most recent)
-        df_pat_with_dni = df_patients[df_patients['DNI_clean'] != ''].drop_duplicates(subset=['DNI_clean'], keep='last')
-        df_pat_without_dni = df_patients[df_patients['DNI_clean'] == '']
-        df_patients = pd.concat([df_pat_with_dni, df_pat_without_dni])
-        
-        # Drop duplicated Full Names (keeping the most recent) to catch patients without DNI registered twice
+        # --- Professional Deduplication and ID Mapping ---
+        # 1. Clean DNI and FullName for grouping
+        df_patients['DNI_clean'] = df_patients['DNI'].fillna('').astype(str).str.strip().replace({'nan': '', 'None': '', '0': ''})
         df_patients['FullName'] = (df_patients['Nombres'].fillna('').astype(str).str.strip() + " " + df_patients['ApellidoPaterno'].fillna('').astype(str).str.strip()).str.lower()
-        df_patients.drop_duplicates(subset=['FullName'], keep='last', inplace=True)
-        # ----------------------------------------
+        
+        # 2. Sort to keep the most recent ID for each group
+        df_patients.sort_values('Id_Paciente', ascending=True, inplace=True)
+        
+        # 3. Create mapping for DNI duplicates
+        id_map = {id: id for id in df_patients['Id_Paciente']}
+        
+        # Map DNIs
+        dni_groups = df_patients[df_patients['DNI_clean'] != ''].groupby('DNI_clean')['Id_Paciente'].apply(list)
+        for group in dni_groups:
+            if len(group) > 1:
+                main_id = group[-1] # Pick latest
+                for old_id in group[:-1]: id_map[old_id] = main_id
+        
+        # Map FullNames (for those without DNI)
+        name_groups = df_patients[df_patients['DNI_clean'] == ''].groupby('FullName')['Id_Paciente'].apply(list)
+        for group in name_groups:
+            if len(group) > 1:
+                main_id = group[-1] # Pick latest
+                for old_id in group[:-1]: id_map[old_id] = main_id
+        
+        # 4. Final list of unique patients to insert
+        unique_patient_ids = set(id_map.values())
+        df_unique_patients = df_patients[df_patients['Id_Paciente'].isin(unique_patient_ids)]
+        # ------------------------------------------------
 
         out.write("-- Table: patients\n")
-        # To accumulate guardians
         guardians = []
         
-        for _, row in df_patients.iterrows():
+        for _, row in df_unique_patients.iterrows():
             pat_id = row['Id_Paciente']
-            if pat_id == 0 or pd.isna(pat_id):
-                continue
+            if pd.isna(pat_id) or pat_id == 0: continue
             
             fname = clean_val(row.get('Nombres'))
             lname1 = clean_val(row.get('ApellidoPaterno'))
             lname2 = clean_val(row.get('ApellidoMaterno'))
             dni = clean_val(row.get('DNI'))
             
-            # Format date (Access dates usually come as 'dd/MM/yyyy hh:mm:ss' or 'MM/dd/yyyy' in CSV)
+            # Format date
             raw_bdate = str(row.get('Fechanacimiento')).split(' ')[0]
             bdate = clean_val(raw_bdate) if '/' in raw_bdate or '-' in raw_bdate else "NULL"
             if bdate != "NULL" and '/' in raw_bdate:
-                # Convert from dd/mm/yyyy to yyyy-mm-dd roughly
                 parts = raw_bdate.split('/')
-                if len(parts) == 3:
-                    bdate = f"'{parts[2]}-{parts[1]}-{parts[0]}'"
+                if len(parts) == 3: bdate = f"'{parts[2]}-{parts[1]}-{parts[0]}'"
 
             phone1 = clean_val(row.get('Celular'))
             if phone1 == "NULL": phone1 = clean_val(row.get('Telefono'))
@@ -94,11 +102,11 @@ def main():
 
             out.write(f"INSERT INTO patients (id, first_name, last_name_paternal, last_name_maternal, dni_number, birth_date, phone_primary, email, address, district, acquisition_channel) VALUES ({pat_id}, {fname}, {lname1}, {lname2}, {dni}, {bdate}, {phone1}, {email}, {address}, {district}, {channel}) ON CONFLICT DO NOTHING;\n")
             
-            # Collect Apoderado1
+            # Collect Apoderado
             apod1_name = row.get('Apoderado1')
             if pd.notna(apod1_name) and str(apod1_name).strip():
                 guardians.append({
-                    'patient_id': pat_id,
+                    'patient_id': pat_id, # Uses the main_id already
                     'fname': clean_val(apod1_name),
                     'rel': clean_val(row.get('TipoApod1')),
                     'phone': clean_val(row.get('TelfApod1')),
@@ -147,8 +155,9 @@ def main():
             out.write("-- Table: appointments\n")
             for _, row in df_appts.iterrows():
                 appt_id = row['Id_cita']
-                pat_id = row.get('id_paciente')
-                if pd.isna(pat_id): continue # skip orphan appointments
+                pat_id_raw = row.get('id_paciente')
+                if pd.isna(pat_id_raw): continue # skip orphan appointments
+                pat_id = id_map.get(pat_id_raw, pat_id_raw) # Apply Mapping
                 
                 # Transform Estado -> StatusEnum
                 st = str(row.get('Estado')).strip()
@@ -190,8 +199,9 @@ def main():
             out.write("-- Table: payments\n")
             for _, row in df_pay.iterrows():
                 pay_id = row['id_procesos']
-                pat_id = row.get('Id_paciente')
-                if pd.isna(pat_id): continue
+                pat_id_raw = row.get('Id_paciente')
+                if pd.isna(pat_id_raw): continue
+                pat_id = id_map.get(pat_id_raw, pat_id_raw) # Apply Mapping
                 
                 amount = row.get('Pago')
                 if pd.isna(amount): amount = "0"
