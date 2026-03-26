@@ -265,7 +265,7 @@ export default function AppointmentForm({ onSuccess, onCancel }: AppointmentForm
       {/* Doctor Selection */}
       <div className="space-y-4 pt-6 border-t border-slate-100">
         <h3 className="text-xs font-black text-slate-500 uppercase tracking-widest flex items-center gap-2">
-          <Stethoscope className="w-4 h-4" /> Especialista
+          <Stethoscope className="w-4 h-4" /> Especialista *
         </h3>
         <div className="space-y-3">
           <select 
@@ -275,7 +275,7 @@ export default function AppointmentForm({ onSuccess, onCancel }: AppointmentForm
             onChange={(e) => setFormState(prev => ({ ...prev, doctor_id: e.target.value }))}
             className="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-2xl focus:ring-2 focus:ring-teal-500/20 focus:border-teal-600 outline-none transition-all text-sm appearance-none font-bold text-slate-900 uppercase cursor-pointer"
           >
-            <option value="">SELECCIONAR DOCTOR *</option>
+            <option value="">Seleccionar doctor</option>
             {doctors.map(d => (
               <option key={d.id} value={d.id}>DR(A). {d.first_name} {d.last_name}</option>
             ))}
