@@ -30,7 +30,7 @@ INSERT INTO doctors (id, first_name, last_name, specialty, cop_number) VALUES (1
 INSERT INTO doctors (id, first_name, last_name, specialty, cop_number) VALUES (17, 'RONALD', 'MONTOYA', NULL, NULL) ON CONFLICT DO NOTHING;
 INSERT INTO doctors (id, first_name, last_name, specialty, cop_number) VALUES (18, 'CARLA', 'FLORES', NULL, NULL) ON CONFLICT DO NOTHING;
 INSERT INTO doctors (id, first_name, last_name, specialty, cop_number) VALUES (19, 'MEDICAL DENT', 'MEDICAL', NULL, NULL) ON CONFLICT DO NOTHING;
-INSERT INTO doctors (id, first_name, last_name, specialty, cop_number) VALUES (20, 'CARLOS', 'FEBRES', 'TERCERAS MOLARES, IMPLANTES', NULL) ON CONFLICT DO NOTHING;
+INSERT INTO doctors (id, first_name, last_name, specialty, cop_number) VALUES (20, 'CARLOS', 'FEBRES', NULL, NULL) ON CONFLICT DO NOTHING;
 INSERT INTO doctors (id, first_name, last_name, specialty, cop_number) VALUES (21, 'DIEGO', 'QUISPE', NULL, NULL) ON CONFLICT DO NOTHING;
 INSERT INTO doctors (id, first_name, last_name, specialty, cop_number) VALUES (22, 'KYNTHIA', 'GAMBOA', NULL, NULL) ON CONFLICT DO NOTHING;
 INSERT INTO doctors (id, first_name, last_name, specialty, cop_number) VALUES (23, 'CARLA', 'VALLEJO', NULL, NULL) ON CONFLICT DO NOTHING;

@@ -44,13 +44,17 @@ export default function AppointmentForm({ onSuccess, onCancel }: AppointmentForm
 
   // Derived available time slots based on selected date
   const availableTimeSlots = TIME_SLOTS.filter(slot => {
-    const today = new Date().toISOString().split("T")[0];
-    if (formState.date !== today) return true;
+    // Get current Peru date (YYYY-MM-DD)
+    const peruDateString = new Date().toLocaleDateString("en-CA", { timeZone: "America/Lima" }); // 'en-CA' gives YYYY-MM-DD
+    
+    if (formState.date !== peruDateString) return true;
 
     const [slotHour, slotMin] = slot.split(":").map(Number);
-    const now = new Date();
-    const nowHour = now.getHours();
-    const nowMin = now.getMinutes();
+    
+    // Get current Peru time
+    const peruTime = new Date(new Date().toLocaleString("en-US", { timeZone: "America/Lima" }));
+    const nowHour = peruTime.getHours();
+    const nowMin = peruTime.getMinutes();
 
     if (slotHour > nowHour) return true;
     if (slotHour === nowHour && slotMin > nowMin) return true;

@@ -159,16 +159,16 @@ export default function AppointmentsPage() {
                             <div className="flex items-center gap-3">
                                <div className="flex flex-col items-center justify-center w-12 h-12 rounded-xl bg-teal-50 border border-teal-100 text-teal-700">
                                   <span className="text-[10px] font-black leading-none uppercase">
-                                    {new Date(appt.scheduled_start).toLocaleDateString('es-PE', { month: 'short' }).replace('.', '')}
+                                    {new Date(appt.scheduled_start).toLocaleDateString('es-PE', { month: 'short', timeZone: 'America/Lima' }).replace('.', '')}
                                   </span>
                                   <span className="text-lg font-bold">
-                                    {new Date(appt.scheduled_start).getDate()}
+                                    {new Date(appt.scheduled_start).toLocaleDateString('es-PE', { day: 'numeric', timeZone: 'America/Lima' })}
                                   </span>
                                </div>
                              <div>
                                <p className="text-sm font-bold text-slate-900 flex items-center gap-1.5">
                                  <Clock className="w-3.5 h-3.5 text-slate-400" />
-                                 {appt.scheduled_start ? new Date(appt.scheduled_start).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '---'}
+                                 {appt.scheduled_start ? new Date(appt.scheduled_start).toLocaleTimeString('es-PE', { hour: '2-digit', minute: '2-digit', timeZone: 'America/Lima' }) : '---'}
                                </p>
                              </div>
                           </div>
