@@ -41,7 +41,7 @@ export default function PatientsPage() {
   }
 
   const filteredPatients = patients.filter(p => 
-    `${p.first_name} ${p.last_name_paternal} ${p.last_name_maternal}`.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    `${p.first_name || ''} ${p.last_name_paternal || ''} ${p.last_name_maternal || ''}`.toLowerCase().includes(searchTerm.toLowerCase()) ||
     (p.dni_number && p.dni_number.includes(searchTerm))
   );
 
@@ -109,7 +109,7 @@ export default function PatientsPage() {
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-3">
                         <div className="w-10 h-10 rounded-full bg-teal-100 text-teal-700 flex items-center justify-center font-bold text-sm">
-                          {patient.first_name[0]}{patient.last_name_paternal[0]}
+                          {patient.first_name?.[0]}{patient.last_name_paternal?.[0]}
                         </div>
                         <div>
                           <p className="text-sm font-bold text-slate-900">{patient.first_name} {patient.last_name_paternal}</p>
