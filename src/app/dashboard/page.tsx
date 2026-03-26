@@ -19,45 +19,57 @@ export default function DashboardPage() {
   return (
     <div className="space-y-8 animate-in fade-in duration-700">
       <div>
-        <h1 className="text-3xl font-bold text-slate-900">Dashboard</h1>
-        <p className="mt-2 text-slate-500">Bienvenido de nuevo. Aquí tienes un resumen de la actividad hoy.</p>
+        <h1 className="text-4xl font-black text-slate-900 tracking-tight">Dashboard</h1>
+        <p className="mt-2 text-slate-500 font-medium">Bienvenido de nuevo. Aquí tienes un resumen de la actividad hoy.</p>
       </div>
 
       <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
         {stats.map((item) => (
           <div
             key={item.name}
-            className="relative bg-white pt-5 px-5 pb-6 overflow-hidden rounded-2xl shadow-sm border border-slate-100 hover:shadow-md transition-shadow group"
+            className="relative bg-white pt-6 px-6 pb-8 overflow-hidden rounded-[2rem] shadow-sm border border-slate-100 hover:shadow-2xl hover:shadow-slate-200/50 transition-all group"
           >
             <div className="flex justify-between items-start">
-              <div className="p-3 bg-teal-50 rounded-xl group-hover:bg-teal-100 transition-colors">
-                <item.icon className="w-6 h-6 text-teal-600" />
+              <div className="p-3 bg-teal-600 rounded-2xl shadow-lg shadow-teal-100 group-hover:scale-110 transition-transform">
+                <item.icon className="w-6 h-6 text-white" />
               </div>
               <div className={cn(
-                "flex items-center gap-1 text-xs font-semibold px-2 py-1 rounded-full",
-                item.trend === 'up' ? "bg-green-50 text-green-700" : "bg-red-50 text-red-700"
+                "flex items-center gap-1 text-[10px] font-black px-2.5 py-1 rounded-lg uppercase tracking-widest shadow-sm",
+                item.trend === 'up' ? "bg-green-600 text-white" : "bg-red-600 text-white"
               )}>
                 {item.trend === 'up' ? <ArrowUpRight className="w-3 h-3" /> : <ArrowDownRight className="w-3 h-3" />}
                 {item.change}
               </div>
             </div>
-            <div className="mt-4 flex flex-col items-baseline">
-              <p className="text-2xl font-bold text-slate-900 tracking-tight">{item.value}</p>
-              <p className="mt-1 text-sm font-medium text-slate-500 truncate">{item.name}</p>
+            <div className="mt-6 flex flex-col items-baseline">
+              <p className="text-4xl font-black text-slate-900 tracking-tighter">{item.value}</p>
+              <p className="mt-1 text-[10px] font-black text-slate-500 uppercase tracking-widest leading-none">{item.name}</p>
             </div>
-            <div className="absolute bottom-0 left-0 h-1 bg-teal-600/0 group-hover:bg-teal-600 transition-all w-full" />
           </div>
         ))}
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        <div className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm h-96 flex flex-col justify-center items-center text-slate-400">
-          <Calendar className="w-12 h-12 mb-4 opacity-20" />
-          <p className="text-sm font-medium">Gráfico de Citas Próximamente</p>
+        <div className="bg-white p-10 rounded-[2.5rem] border border-slate-100 shadow-sm h-80 flex flex-col justify-center items-center group hover:border-teal-200 transition-all relative overflow-hidden">
+          <div className="absolute top-0 right-0 p-4">
+            <span className="text-[9px] font-black uppercase tracking-[0.2em] px-3 py-1 bg-slate-100 text-slate-500 rounded-full group-hover:bg-teal-600 group-hover:text-white transition-colors">Próximamente</span>
+          </div>
+          <div className="w-20 h-20 rounded-3xl bg-slate-50 flex items-center justify-center mb-6 group-hover:bg-teal-50 transition-colors">
+            <Calendar className="w-10 h-10 text-slate-300 group-hover:text-teal-600 transition-all" />
+          </div>
+          <h3 className="text-lg font-black text-slate-900 tracking-tight uppercase">Citas e Incidencias</h3>
+          <p className="mt-2 text-xs font-bold text-slate-400 text-center max-w-[240px]">Visualiza el flujo de pacientes y estadísticas de atención diaria.</p>
         </div>
-        <div className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm h-96 flex flex-col justify-center items-center text-slate-400">
-          <TrendingUp className="w-12 h-12 mb-4 opacity-20" />
-          <p className="text-sm font-medium">Gráfico de Ingresos Próximamente</p>
+        
+        <div className="bg-white p-10 rounded-[2.5rem] border border-slate-100 shadow-sm h-80 flex flex-col justify-center items-center group hover:border-teal-200 transition-all relative overflow-hidden">
+          <div className="absolute top-0 right-0 p-4">
+            <span className="text-[9px] font-black uppercase tracking-[0.2em] px-3 py-1 bg-slate-100 text-slate-500 rounded-full group-hover:bg-teal-600 group-hover:text-white transition-colors">Próximamente</span>
+          </div>
+          <div className="w-20 h-20 rounded-3xl bg-slate-50 flex items-center justify-center mb-6 group-hover:bg-teal-50 transition-colors">
+            <TrendingUp className="w-10 h-10 text-slate-300 group-hover:text-teal-600 transition-all" />
+          </div>
+          <h3 className="text-lg font-black text-slate-900 tracking-tight uppercase">Ingresos Mensuales</h3>
+          <p className="mt-2 text-xs font-bold text-slate-400 text-center max-w-[240px]">Análisis detallado de transacciones, proformas y balances generales.</p>
         </div>
       </div>
     </div>

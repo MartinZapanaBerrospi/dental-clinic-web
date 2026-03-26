@@ -132,42 +132,39 @@ export default function PatientsPage() {
                   <tr key={patient.id} className="hover:bg-teal-50/20 transition-colors group">
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-full bg-teal-100 text-teal-700 flex items-center justify-center font-bold text-sm">
+                        <div className="w-10 h-10 rounded-full bg-teal-600 text-white flex items-center justify-center font-black text-xs shadow-sm">
                           {patient.first_name?.[0]}{patient.last_name_paternal?.[0]}
                         </div>
                         <div>
-                          <p className="text-sm font-bold text-slate-900">{patient.first_name} {patient.last_name_paternal}</p>
-                          <p className="text-xs text-slate-500 capitalize">{patient.last_name_maternal}</p>
+                          <p className="text-sm font-black text-slate-900 uppercase tracking-tight">
+                            {patient.first_name} {patient.last_name_paternal} {patient.last_name_maternal}
+                          </p>
                         </div>
                       </div>
                     </td>
                     <td className="px-6 py-4">
-                      <span className="text-sm font-medium text-slate-600 font-mono">{patient.dni_number || '---'}</span>
+                      <span className="text-xs font-bold text-slate-700 font-mono bg-slate-100 px-2 py-1 rounded-md">{patient.dni_number || '---'}</span>
                     </td>
                     <td className="px-6 py-4">
-                      <p className="text-sm text-slate-600">{patient.phone_primary}</p>
-                      <p className="text-xs text-slate-400">{patient.email || 'Sin correo'}</p>
+                      <p className="text-sm font-bold text-slate-700">{patient.phone_primary || '---'}</p>
+                      <p className="text-xs text-slate-500 font-medium">{patient.email || 'SIN CORREO'}</p>
+                    </td>
+                    <td className="px-6 py-4 text-xs font-bold text-slate-700 uppercase">
+                      {patient.district || 'N/A'}
                     </td>
                     <td className="px-6 py-4">
-                      <span className="text-sm text-slate-600">{patient.district || 'N/A'}</span>
-                    </td>
-                    <td className="px-6 py-4">
-                      <span className="inline-flex items-center px-2 py-1 rounded-md bg-green-50 text-green-700 text-[10px] font-bold uppercase tracking-tighter border border-green-100">
-                        Activo
+                      <span className="inline-flex items-center px-2 py-1 rounded-md bg-green-100 text-green-800 text-[10px] font-black uppercase tracking-tighter border border-green-200">
+                        ACTIVO
                       </span>
                     </td>
                     <td className="px-6 py-4 text-right">
-                      <div className="flex items-center justify-end gap-2">
-                        <Link 
-                          href={`/patients/${patient.id}`}
-                          className="p-2 text-slate-400 hover:text-teal-600 hover:bg-teal-50 rounded-lg transition-all"
-                        >
-                          <ChevronRight className="w-5 h-5" />
-                        </Link>
-                        <button className="p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-lg transition-all">
-                          <MoreHorizontal className="w-5 h-5" />
-                        </button>
-                      </div>
+                      <Link 
+                        href={`/patients/${patient.id}`}
+                        className="inline-flex items-center gap-2 px-4 py-2 text-xs font-black text-teal-700 bg-teal-50 hover:bg-teal-100 rounded-xl transition-all border border-teal-100 active:scale-95"
+                      >
+                        VER PERFIL
+                        <ChevronRight className="w-4 h-4" />
+                      </Link>
                     </td>
                   </tr>
                 ))

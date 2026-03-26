@@ -100,9 +100,11 @@ export default function PatientDetailsPage({ params }: { params: Promise<{ id: s
           <ArrowLeft className="w-5 h-5" />
         </Link>
         <div>
-          <h1 className="text-2xl font-bold tracking-tight">{patient.first_name} {patient.last_name_paternal}</h1>
-          <p className="text-sm text-slate-500 flex items-center gap-2">
-            ID: {patient.id} • DNI: {patient.dni_number || '---'}
+          <h1 className="text-2xl font-black tracking-tighter uppercase text-slate-900">
+            {patient.first_name} {patient.last_name_paternal} {patient.last_name_maternal}
+          </h1>
+          <p className="text-[10px] text-slate-600 flex items-center gap-2 font-bold uppercase tracking-widest">
+            DNI: {patient.dni_number || '---'}
           </p>
         </div>
       </div>
@@ -110,43 +112,46 @@ export default function PatientDetailsPage({ params }: { params: Promise<{ id: s
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
         {/* Profile Stats & Info */}
         <div className="lg:col-span-1 space-y-6">
-          <div className="bg-white rounded-3xl border border-slate-100 shadow-sm overflow-hidden p-6 space-y-6">
-            <div className="flex items-center gap-4">
-              <div className="w-16 h-16 rounded-2xl bg-teal-600 flex items-center justify-center text-white text-2xl font-bold shadow-lg shadow-teal-100">
+          <div className="bg-white rounded-[2rem] border border-slate-100 shadow-xl shadow-slate-200/50 overflow-hidden p-8 space-y-8">
+            <div className="flex items-center gap-5">
+              <div className="w-20 h-20 rounded-[1.5rem] bg-teal-600 flex items-center justify-center text-white text-3xl font-black shadow-lg shadow-teal-100">
                 {patient.first_name[0]}{patient.last_name_paternal[0]}
               </div>
-              <div>
-                <span className="text-xs font-bold text-teal-600 bg-teal-50 px-2 py-1 rounded-md uppercase tracking-wider">Paciente Premium</span>
-                <p className="mt-1 font-bold text-slate-900">{patient.first_name} {patient.last_name_paternal}</p>
+              <div className="flex-1">
+                <p className="text-xl font-black text-slate-900 uppercase tracking-tight">
+                  {patient.first_name} {patient.last_name_paternal} {patient.last_name_maternal}
+                </p>
               </div>
             </div>
 
-            <div className="space-y-4 pt-4 border-t border-slate-50">
-              <div className="flex items-center gap-3 text-sm">
-                <div className="w-8 h-8 rounded-lg bg-slate-50 flex items-center justify-center text-slate-400">
-                  <User className="w-4 h-4" />
+            <div className="space-y-6 pt-6 border-t border-slate-50">
+              <div className="flex items-center gap-4">
+                <div className="w-10 h-10 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center text-slate-500">
+                  <User className="w-5 h-5" />
                 </div>
                 <div>
-                  <dt className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Nacimiento</dt>
-                  <dd className="font-medium text-slate-700">{patient.birth_date || 'N/A'}</dd>
+                  <dt className="text-[10px] font-black text-slate-400 uppercase tracking-[0.1em]">Nacimiento</dt>
+                  <dd className="text-sm font-bold text-slate-800">
+                    {patient.birth_date ? new Date(patient.birth_date + 'T12:00:00').toLocaleDateString('es-PE') : 'N/A'}
+                  </dd>
                 </div>
               </div>
-              <div className="flex items-center gap-3 text-sm">
-                <div className="w-8 h-8 rounded-lg bg-slate-50 flex items-center justify-center text-slate-400">
-                  <Phone className="w-4 h-4" />
+              <div className="flex items-center gap-4">
+                <div className="w-10 h-10 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center text-slate-500">
+                  <Phone className="w-5 h-5" />
                 </div>
                 <div>
-                  <dt className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Teléfono</dt>
-                  <dd className="font-medium text-slate-700">{patient.phone_primary}</dd>
+                  <dt className="text-[10px] font-black text-slate-400 uppercase tracking-[0.1em]">Teléfono</dt>
+                  <dd className="text-sm font-bold text-slate-800">{patient.phone_primary}</dd>
                 </div>
               </div>
-              <div className="flex items-center gap-3 text-sm">
-                <div className="w-8 h-8 rounded-lg bg-slate-50 flex items-center justify-center text-slate-400">
-                  <MapPin className="w-4 h-4" />
+              <div className="flex items-center gap-4">
+                <div className="w-10 h-10 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center text-slate-500">
+                  <MapPin className="w-5 h-5" />
                 </div>
                 <div>
-                  <dt className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Distrito</dt>
-                  <dd className="font-medium text-slate-700">{patient.district || 'N/A'}</dd>
+                  <dt className="text-[10px] font-black text-slate-400 uppercase tracking-[0.1em]">Distrito</dt>
+                  <dd className="text-sm font-bold text-slate-800 uppercase">{patient.district || 'N/A'}</dd>
                 </div>
               </div>
             </div>
@@ -154,26 +159,23 @@ export default function PatientDetailsPage({ params }: { params: Promise<{ id: s
 
           {/* Guardian Info */}
           {guardian && (
-            <div className="bg-slate-900 rounded-3xl p-6 text-white space-y-4 shadow-xl shadow-slate-200">
+            <div className="bg-slate-900 rounded-[2rem] p-8 text-white space-y-6 shadow-2xl shadow-slate-300">
               <div className="flex items-center justify-between">
-                <h3 className="text-sm font-bold uppercase tracking-widest text-slate-400 flex items-center gap-2">
-                  <Shield className="w-4 h-4" /> Apoderado
+                <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 flex items-center gap-2">
+                  <Shield className="w-4 h-4 text-teal-400" /> Apoderado
                 </h3>
               </div>
-              <div className="space-y-3">
-                <p className="text-lg font-bold">{guardian.first_name}</p>
-                <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-4">
+                <p className="text-xl font-black uppercase tracking-tight">{guardian.first_name}</p>
+                <div className="grid grid-cols-2 gap-6">
                   <div>
-                    <dt className="text-[10px] text-slate-500 uppercase tracking-widest font-bold">Relación</dt>
-                    <dd className="text-sm font-medium">{guardian.relationship}</dd>
+                    <dt className="text-[10px] text-slate-500 uppercase tracking-widest font-black">Relación</dt>
+                    <dd className="text-sm font-bold text-slate-200 uppercase">{guardian.relationship}</dd>
                   </div>
                   <div>
-                    <dt className="text-[10px] text-slate-500 uppercase tracking-widest font-bold">DNI</dt>
-                    <dd className="text-sm font-medium">{guardian.dni_number || '---'}</dd>
+                    <dt className="text-[10px] text-slate-500 uppercase tracking-widest font-black">DNI</dt>
+                    <dd className="text-sm font-bold text-slate-200 font-mono tracking-tighter">{guardian.dni_number || '---'}</dd>
                   </div>
-                </div>
-                <div className="pt-2 border-t border-slate-800">
-                  <p className="text-xs text-slate-400">Telf: {guardian.phone}</p>
                 </div>
               </div>
             </div>
@@ -182,17 +184,17 @@ export default function PatientDetailsPage({ params }: { params: Promise<{ id: s
 
         {/* Clinical History & Actions */}
         <div className="lg:col-span-2 space-y-6">
-          <div className="bg-white rounded-3xl border border-slate-100 shadow-sm overflow-hidden min-h-[600px] flex flex-col">
-            <div className="flex border-b border-slate-50 p-2 bg-slate-50/30">
+          <div className="bg-white rounded-[2rem] border border-slate-100 shadow-sm overflow-hidden min-h-[600px] flex flex-col transition-all hover:shadow-md">
+            <div className="flex border-b border-slate-50 p-3 bg-slate-50/20">
               {tabs.map((tab) => (
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id as any)}
                   className={cn(
-                    "flex-1 flex items-center justify-center gap-2 py-3 text-sm font-semibold rounded-2xl transition-all",
+                    "flex-1 flex items-center justify-center gap-2 py-3.5 text-xs font-black uppercase tracking-widest rounded-2xl transition-all",
                     activeTab === tab.id
-                      ? "bg-white text-teal-600 shadow-sm"
-                      : "text-slate-500 hover:text-slate-800"
+                      ? "bg-white text-teal-700 shadow-sm border border-slate-100"
+                      : "text-slate-500 hover:text-slate-900"
                   )}
                 >
                   <tab.icon className="w-4 h-4" />
@@ -201,34 +203,34 @@ export default function PatientDetailsPage({ params }: { params: Promise<{ id: s
               ))}
             </div>
 
-            <div className="p-6 flex-1">
+            <div className="p-8 flex-1">
               {activeTab === 'appointments' && (
-                <div className="space-y-4">
-                  <div className="flex justify-between items-center mb-6">
-                    <h3 className="font-bold text-slate-800">Historial de Citas</h3>
-                    <button className="text-xs font-bold text-teal-600 bg-teal-50 px-3 py-2 rounded-xl flex items-center gap-1 hover:bg-teal-100 transition-colors">
-                      <Plus className="w-3 h-3" /> Nueva Cita
+                <div className="space-y-6">
+                  <div className="flex justify-between items-center mb-4">
+                    <h3 className="text-xs font-black text-slate-800 uppercase tracking-[0.2em]">Historial de Citas</h3>
+                    <button className="text-[10px] font-black text-teal-800 bg-teal-50 px-4 py-2 rounded-xl flex items-center gap-1.5 hover:bg-teal-100 transition-all border border-teal-100 uppercase tracking-widest active:scale-95">
+                      <Plus className="w-3.5 h-3.5" /> Nueva Cita
                     </button>
                   </div>
                   {appointments.length > 0 ? (
-                    <div className="space-y-3">
+                    <div className="space-y-4">
                       {appointments.map((appt) => (
-                        <div key={appt.id} className="p-4 rounded-2xl border border-slate-50 bg-slate-50/30 flex items-center justify-between group hover:border-teal-100 transition-all">
-                          <div className="flex items-center gap-4">
-                            <div className="w-12 h-12 rounded-xl bg-white border border-slate-100 flex flex-col items-center justify-center shadow-sm">
-                              <span className="text-[10px] font-extrabold text-teal-600 leading-none">OCT</span>
-                              <span className="text-lg font-black leading-none mt-0.5">24</span>
+                        <div key={appt.id} className="p-5 rounded-3xl border border-slate-100 bg-white flex items-center justify-between group hover:border-teal-300 hover:shadow-lg hover:shadow-teal-50 transition-all cursor-default">
+                          <div className="flex items-center gap-5">
+                            <div className="w-14 h-14 rounded-2xl bg-slate-50 border border-slate-100 flex flex-col items-center justify-center shadow-sm group-hover:bg-teal-600 group-hover:text-white transition-colors">
+                              <span className="text-[10px] font-black uppercase leading-none mb-1">MAR</span>
+                              <span className="text-xl font-black leading-none">26</span>
                             </div>
                             <div>
-                              <p className="text-sm font-bold text-slate-800">{appt.status || 'Scheduled'}</p>
-                              <p className="text-xs text-slate-500">
-                                {appt.doctors ? `Dr(a). ${appt.doctors.first_name} ${appt.doctors.last_name}` : 'Sin asignar'}
+                              <p className="text-sm font-black text-slate-900 uppercase">{appt.status || 'PROGRAMADA'}</p>
+                              <p className="text-[11px] text-slate-500 font-bold uppercase tracking-tight">
+                                {appt.doctors ? `DR(A). ${appt.doctors.first_name} ${appt.doctors.last_name}` : 'SIN ASIGNAR'}
                               </p>
                             </div>
                           </div>
                           <span className={cn(
-                            "text-[10px] font-bold px-2 py-1 rounded-full uppercase tracking-tighter",
-                            appt.status === 'Attended' ? "bg-green-100 text-green-700" : "bg-teal-50 text-teal-600"
+                            "text-[10px] font-black px-3 py-1.5 rounded-lg uppercase tracking-widest border shadow-sm",
+                            appt.status === 'Attended' ? "bg-green-600 text-white border-green-700" : "bg-teal-50 text-teal-700 border-teal-200"
                           )}>
                             {appt.status}
                           </span>

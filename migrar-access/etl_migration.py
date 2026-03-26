@@ -7,17 +7,26 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 CSV_DIR = os.path.join(BASE_DIR, "csv_export")
 OUTPUT_SQL = os.path.join(BASE_DIR, "data_seed.sql")
 
-def clean_val(val):
+def clean_val(val, to_upper=False):
     if pd.isna(val):
         return "NULL"
     if isinstance(val, (int, float)) and math.isnan(val):
         return "NULL"
-    val = str(val).strip()
-    if val == "" or val.upper() == "NULL":
+    
+    # Remove .0 from numeric strings if they come from float columns
+    s_val = str(val).strip()
+    if s_val.endswith('.0'):
+        s_val = s_val[:-2]
+        
+    if s_val == "" or s_val.upper() == "NULL" or s_val == "nan":
         return "NULL"
-    # Scape single quotes for SQL
-    val = val.replace("'", "''")
-    return f"'{val}'"
+        
+    if to_upper:
+        s_val = s_val.upper()
+        
+    # Escape single quotes for SQL
+    s_val = s_val.replace("'", "''")
+    return f"'{s_val}'"
 
 def main():
     print(f"Reading CSVs from {CSV_DIR}...")
@@ -44,11 +53,11 @@ def main():
             doc_id = row['Id_Doctor']
             fname = row.get('Nombres')
             lname = row.get('Apellido Paterno')
-            esp = clean_val(row.get('Especialidad'))
+            esp = clean_val(row.get('Especialidad'), to_upper=True)
             cop = clean_val(row.get('COP'))
             
             if pd.notna(fname) and doc_id != 0:
-                out.write(f"INSERT INTO doctors (id, first_name, last_name, specialty, cop_number) VALUES ({doc_id}, {clean_val(fname)}, {clean_val(lname)}, {esp}, {cop}) ON CONFLICT DO NOTHING;\n")
+                out.write(f"INSERT INTO doctors (id, first_name, last_name, specialty, cop_number) VALUES ({doc_id}, {clean_val(fname, True)}, {clean_val(lname, True)}, {esp}, {cop}) ON CONFLICT DO NOTHING;\n")
                 
                 # Build mapping (case insensitive)
                 full_name = f"{str(fname).strip()} {str(lname).strip()}".lower()
@@ -102,9 +111,9 @@ def main():
             pat_id = row['Id_Paciente']
             if pd.isna(pat_id) or pat_id == 0: continue
             
-            fname = clean_val(row.get('Nombres'))
-            lname1 = clean_val(row.get('ApellidoPaterno'))
-            lname2 = clean_val(row.get('ApellidoMaterno'))
+            fname = clean_val(row.get('Nombres'), to_upper=True)
+            lname1 = clean_val(row.get('ApellidoPaterno'), to_upper=True)
+            lname2 = clean_val(row.get('ApellidoMaterno'), to_upper=True)
             dni = clean_val(row.get('DNI'))
             
             # Format date
@@ -117,8 +126,8 @@ def main():
             phone1 = clean_val(row.get('Celular'))
             if phone1 == "NULL": phone1 = clean_val(row.get('Telefono'))
             email = clean_val(row.get('Correo Electronico'))
-            address = clean_val(row.get('Direccion'))
-            district = clean_val(row.get('Distrito'))
+            address = clean_val(row.get('Direccion'), to_upper=True)
+            district = clean_val(row.get('Distrito'), to_upper=True)
             channel = clean_val(row.get('Como llego al consultorio'))
 
             out.write(f"INSERT INTO patients (id, first_name, last_name_paternal, last_name_maternal, dni_number, birth_date, phone_primary, email, address, district, acquisition_channel) VALUES ({pat_id}, {fname}, {lname1}, {lname2}, {dni}, {bdate}, {phone1}, {email}, {address}, {district}, {channel}) ON CONFLICT DO NOTHING;\n")
@@ -127,8 +136,8 @@ def main():
             apod1_name = row.get('Apoderado1')
             if pd.notna(apod1_name) and str(apod1_name).strip():
                 guardians.append({
-                    'patient_id': pat_id, # Uses the main_id already
-                    'fname': clean_val(apod1_name),
+                    'patient_id': pat_id, 
+                    'fname': clean_val(apod1_name, to_upper=True),
                     'rel': clean_val(row.get('TipoApod1')),
                     'phone': clean_val(row.get('TelfApod1')),
                     'email': clean_val(row.get('emailapod1')),
