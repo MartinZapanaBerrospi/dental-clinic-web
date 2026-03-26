@@ -10,15 +10,19 @@ import {
   Clock,
   User,
   MoreVertical,
-  Filter
+  Filter,
+  Loader2
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
+import SlideOver from "@/components/ui/SlideOver";
+import AppointmentForm from "@/components/forms/AppointmentForm";
 
 export default function AppointmentsPage() {
   const [appointments, setAppointments] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [view, setView] = useState<'table' | 'calendar'>('table');
+  const [isFormOpen, setIsFormOpen] = useState(false);
 
   useEffect(() => {
     fetchAppointments();
@@ -41,6 +45,11 @@ export default function AppointmentsPage() {
       setLoading(false);
     }
   }
+
+  const handleCreateSuccess = () => {
+    setIsFormOpen(false);
+    fetchAppointments();
+  };
 
   return (
     <div className="space-y-8 animate-in fade-in slide-in-from-right-4 duration-700">
@@ -71,6 +80,17 @@ export default function AppointmentsPage() {
         </div>
       </div>
 
+      <SlideOver 
+        isOpen={isFormOpen} 
+        onClose={() => setIsFormOpen(false)} 
+        title="Agendar Nueva Cita"
+      >
+        <AppointmentForm 
+          onSuccess={handleCreateSuccess} 
+          onCancel={() => setIsFormOpen(false)} 
+        />
+      </SlideOver>
+
       <div className="bg-white rounded-3xl border border-slate-100 shadow-sm overflow-hidden min-h-[600px]">
         {view === 'table' ? (
           <div className="flex flex-col h-full">
@@ -85,7 +105,10 @@ export default function AppointmentsPage() {
                   <Filter className="w-3.5 h-3.5" /> Filtrar
                 </button>
               </div>
-              <button className="flex items-center gap-2 px-4 py-2 text-xs font-bold text-white bg-teal-600 rounded-xl hover:bg-teal-700 shadow-lg shadow-teal-100 transition-all">
+              <button 
+                onClick={() => setIsFormOpen(true)}
+                className="flex items-center gap-2 px-4 py-2 text-xs font-bold text-white bg-teal-600 rounded-xl hover:bg-teal-700 shadow-lg shadow-teal-100 transition-all font-bold"
+              >
                 <Plus className="w-3.5 h-3.5" /> Nueva Cita
               </button>
             </div>

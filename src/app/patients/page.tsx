@@ -8,15 +8,19 @@ import {
   MoreHorizontal, 
   ChevronRight,
   Filter,
-  Download
+  Download,
+  Loader2
 } from "lucide-react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
+import SlideOver from "@/components/ui/SlideOver";
+import PatientForm from "@/components/forms/PatientForm";
 
 export default function PatientsPage() {
   const [patients, setPatients] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
+  const [isFormOpen, setIsFormOpen] = useState(false);
 
   useEffect(() => {
     fetchPatients();
@@ -40,6 +44,11 @@ export default function PatientsPage() {
     }
   }
 
+  const handleCreateSuccess = () => {
+    setIsFormOpen(false);
+    fetchPatients();
+  };
+
   const filteredPatients = patients.filter(p => 
     `${p.first_name || ''} ${p.last_name_paternal || ''} ${p.last_name_maternal || ''}`.toLowerCase().includes(searchTerm.toLowerCase()) ||
     (p.dni_number && p.dni_number.includes(searchTerm))
@@ -57,12 +66,27 @@ export default function PatientsPage() {
             <Download className="w-4 h-4" />
             Exportar
           </button>
-          <button className="flex items-center gap-2 px-4 py-2.5 text-sm font-semibold text-white bg-teal-600 rounded-xl hover:bg-teal-700 transition-all shadow-sm shadow-teal-100 active:scale-95">
+          <button 
+            onClick={() => setIsFormOpen(true)}
+            className="flex items-center gap-2 px-4 py-2.5 text-sm font-semibold text-white bg-teal-600 rounded-xl hover:bg-teal-700 transition-all shadow-sm shadow-teal-100 active:scale-95"
+          >
             <UserPlus className="w-4 h-4" />
             Nuevo Paciente
           </button>
         </div>
       </div>
+
+      {/* Slide-over for New Patient */}
+      <SlideOver 
+        isOpen={isFormOpen} 
+        onClose={() => setIsFormOpen(false)} 
+        title="Registrar Nuevo Paciente"
+      >
+        <PatientForm 
+          onSuccess={handleCreateSuccess} 
+          onCancel={() => setIsFormOpen(false)} 
+        />
+      </SlideOver>
 
       <div className="bg-white rounded-3xl border border-slate-100 shadow-sm overflow-hidden transition-all">
         <div className="p-4 border-b border-slate-50 flex flex-col gap-4 sm:flex-row sm:items-center bg-slate-50/30">
