@@ -29,14 +29,25 @@ def main():
         print("Transforming Doctors...")
         df_docs = pd.read_csv(os.path.join(CSV_DIR, "Doctores.csv"))
         out.write("-- Table: doctors\n")
+        doc_name_map = {}
         for _, row in df_docs.iterrows():
             doc_id = row['Id_Doctor']
-            fname = clean_val(row.get('Nombres'))
-            lname = clean_val(row.get('Apellido Paterno'))
+            fname = row.get('Nombres')
+            lname = row.get('Apellido Paterno')
             esp = clean_val(row.get('Especialidad'))
             cop = clean_val(row.get('COP'))
-            if fname != "NULL" and doc_id != 0:
-                out.write(f"INSERT INTO doctors (id, first_name, last_name, specialty, cop_number) VALUES ({doc_id}, {fname}, {lname}, {esp}, {cop}) ON CONFLICT DO NOTHING;\n")
+            
+            if pd.notna(fname) and doc_id != 0:
+                out.write(f"INSERT INTO doctors (id, first_name, last_name, specialty, cop_number) VALUES ({doc_id}, {clean_val(fname)}, {clean_val(lname)}, {esp}, {cop}) ON CONFLICT DO NOTHING;\n")
+                
+                # Build mapping (case insensitive)
+                full_name = f"{str(fname).strip()} {str(lname).strip()}".lower()
+                doc_name_map[full_name] = doc_id
+                
+                # Also map by first name if unique or from "Nombre total"
+                total_name = str(row.get('Nombre total')).lower()
+                if pd.notna(total_name):
+                    doc_name_map[total_name] = doc_id
         out.write("\n")
 
         # ------------------- 2. Patients & Guardians -------------------
@@ -167,6 +178,19 @@ def main():
                 elif "Cancel" in st: status = "Cancelled"
                 
                 notes = clean_val(row.get('Observaciones_cita'))
+                doc_ref = row.get('Dr_que_atendio')
+                doc_id_val = "NULL"
+                if pd.notna(doc_ref) and doc_ref != 0:
+                    try:
+                        doc_id_val = int(doc_ref)
+                    except:
+                        # Try name mapping
+                        ref_low = str(doc_ref).lower().strip()
+                        doc_id_val = "NULL"
+                        for name, id_ in doc_name_map.items():
+                            if ref_low in name or name in ref_low:
+                                doc_id_val = id_
+                                break
                 
                 # Date logic
                 dt_raw = row.get('Fecha_cita')
@@ -187,7 +211,7 @@ def main():
                     else:
                         s_time = f"'{dt} 00:00:00'"
                     
-                out.write(f"INSERT INTO appointments (id, patient_id, scheduled_start, status, notes) VALUES ({appt_id}, {pat_id}, {s_time}, '{status}', {notes}) ON CONFLICT DO NOTHING;\n")
+                out.write(f"INSERT INTO appointments (id, patient_id, doctor_id, scheduled_start, status, notes) VALUES ({appt_id}, {pat_id}, {doc_id_val}, {s_time}, '{status}', {notes}) ON CONFLICT DO NOTHING;\n")
             out.write("\n")
         except Exception as e:
             print(f"Error Appointments: {e}")
