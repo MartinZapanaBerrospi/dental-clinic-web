@@ -57,7 +57,7 @@ CREATE TABLE IF NOT EXISTS appointments (
     id SERIAL PRIMARY KEY,
     patient_id INTEGER NOT NULL REFERENCES patients(id) ON DELETE CASCADE,
     doctor_id INTEGER REFERENCES doctors(id) ON DELETE SET NULL,
-    scheduled_start TIMESTAMP WITH TIME ZONE NOT NULL,
+    scheduled_start TIMESTAMP WITH TIME ZONE,
     scheduled_end TIMESTAMP WITH TIME ZONE,
     status VARCHAR(50) NOT NULL DEFAULT 'Scheduled',
     notes TEXT,
