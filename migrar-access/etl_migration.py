@@ -160,18 +160,23 @@ def main():
                 notes = clean_val(row.get('Observaciones_cita'))
                 
                 # Date logic
-                dt = str(row.get('Fecha_cita')).split(' ')[0]
+                dt_raw = row.get('Fecha_cita')
+                dt = str(dt_raw).split(' ')[0]
                 tm = str(row.get('Hora_cita'))
-                if "/" in dt:
-                    p = dt.split('/')
-                    if len(p) == 3: dt = f"{p[2]}-{p[1]}-{p[0]}"
                 
-                if pd.notna(tm) and tm != "" and tm != "nan":
-                    # Time often comes as "30/12/1899 16:00:00" from Access
-                    if " " in tm: tm = tm.split(' ')[1]
-                    s_time = f"'{dt} {tm}'"
+                if pd.isna(dt_raw) or dt == "nan" or dt == "" or dt == "None":
+                    s_time = "NULL"
                 else:
-                    s_time = f"'{dt} 00:00:00'"
+                    if "/" in dt:
+                        p = dt.split('/')
+                        if len(p) == 3: dt = f"{p[2]}-{p[1]}-{p[0]}"
+                    
+                    if pd.notna(tm) and tm != "" and tm != "nan":
+                        # Time often comes as "30/12/1899 16:00:00" from Access
+                        if " " in tm: tm = tm.split(' ')[1]
+                        s_time = f"'{dt} {tm}'"
+                    else:
+                        s_time = f"'{dt} 00:00:00'"
                     
                 out.write(f"INSERT INTO appointments (id, patient_id, scheduled_start, status, notes) VALUES ({appt_id}, {pat_id}, {s_time}, '{status}', {notes}) ON CONFLICT DO NOTHING;\n")
             out.write("\n")

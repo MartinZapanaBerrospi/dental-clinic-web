@@ -81,7 +81,7 @@ INSERT INTO treatments (id, name, base_cost) VALUES (9, 'Curaciones', NULL) ON C
 -- Table: appointments
 INSERT INTO appointments (id, patient_id, scheduled_start, status, notes) VALUES (6961, 1544.0, '2025-10-13 16:00:00', 'Attended', 'se le ofrecio el sabado 18 pero l adra no puede asistir') ON CONFLICT DO NOTHING;
 INSERT INTO appointments (id, patient_id, scheduled_start, status, notes) VALUES (6962, 1544.0, '2025-10-18 11:00:00', 'Scheduled', NULL) ON CONFLICT DO NOTHING;
-INSERT INTO appointments (id, patient_id, scheduled_start, status, notes) VALUES (6963, 1544.0, 'nan 00:00:00', 'Scheduled', NULL) ON CONFLICT DO NOTHING;
+INSERT INTO appointments (id, patient_id, scheduled_start, status, notes) VALUES (6963, 1544.0, NULL, 'Scheduled', NULL) ON CONFLICT DO NOTHING;
 INSERT INTO appointments (id, patient_id, scheduled_start, status, notes) VALUES (6974, 1545.0, '2025-10-16 15:00:00', 'Scheduled', 'se le escribe 17/01/26') ON CONFLICT DO NOTHING;
 INSERT INTO appointments (id, patient_id, scheduled_start, status, notes) VALUES (6975, 1546.0, '2025-10-18 11:00:00', 'Scheduled', NULL) ON CONFLICT DO NOTHING;
 INSERT INTO appointments (id, patient_id, scheduled_start, status, notes) VALUES (6977, 1547.0, '2025-10-22 17:30:00', 'Scheduled', 'evaluara la proforma con su esposo') ON CONFLICT DO NOTHING;
