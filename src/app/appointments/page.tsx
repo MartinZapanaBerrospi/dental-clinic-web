@@ -178,9 +178,14 @@ export default function AppointmentsPage() {
                              <div className="w-8 h-8 rounded-full bg-slate-200 flex items-center justify-center font-bold text-[10px] text-slate-600 group-hover:bg-teal-600 group-hover:text-white transition-all">
                                {appt.patients?.first_name?.[0]}{appt.patients?.last_name_paternal?.[0]}
                              </div>
-                             <span className="text-sm font-black text-slate-900 uppercase tracking-tight">
-                               {appt.patients?.first_name} {appt.patients?.last_name_paternal} {appt.patients?.last_name_maternal}
-                             </span>
+                             <div className="flex flex-col">
+                               <span className="text-sm font-black text-slate-900 uppercase tracking-tight leading-none">
+                                 {appt.patients?.first_name}
+                               </span>
+                               <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider mt-0.5">
+                                 {appt.patients?.last_name_paternal} {appt.patients?.last_name_maternal}
+                               </span>
+                             </div>
                           </Link>
                         </td>
                         <td className="px-6 py-5">

@@ -14,6 +14,7 @@ import {
 import Link from "next/link";
 
 export default function FinancialsPage() {
+  const [searchTerm, setSearchTerm] = useState("");
   const [payments, setPayments] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -26,7 +27,7 @@ export default function FinancialsPage() {
       setLoading(true);
       const { data, error } = await supabase
         .from('payments')
-        .select('*, patients(first_name, last_name_paternal)')
+        .select('*, patients(first_name, last_name_paternal, last_name_maternal)')
         .order('id', { ascending: false })
         .limit(100);
 
@@ -39,7 +40,11 @@ export default function FinancialsPage() {
     }
   }
 
-  const totalRevenue = payments.reduce((sum, p) => sum + (parseFloat(p.amount_paid) || 0), 0);
+  const filteredPayments = payments.filter(p => 
+    `${p.patients?.first_name || ''} ${p.patients?.last_name_paternal || ''} ${p.patients?.last_name_maternal || ''}`.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  const totalRevenue = filteredPayments.reduce((sum, p) => sum + (parseFloat(p.amount_paid) || 0), 0);
 
   return (
     <div className="space-y-8 animate-in fade-in slide-in-from-left-4 duration-700 pb-20">
